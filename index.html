@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vape Counter</title>
+    <!-- Подключаем скрипт Telegram -->
+    <script src="https://telegram.org"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #00f2fe;
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        }
+        .counter {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #4facfe;
+        }
+        .vape-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            color: white;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.4);
+            transition: transform 0.1s, box-shadow 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .vape-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(0, 242, 254, 0.6);
+        }
+        .status {
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #aaaaaa;
+            min-height: 24px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Тяги</h1>
+    <div class="counter" id="count">0</div>
+    <button class="vape-btn" id="vapeBtn">Сделать тягу 💨</button>
+    <div class="status" id="statusText"></div>
+</div>
+
+<script>
+    // Инициализация Telegram Web App
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // Разворачиваем на весь экран
+
+    const vapeBtn = document.getElementById('vapeBtn');
+    const countDisplay = document.getElementById('count');
+    const statusText = document.getElementById('statusText');
+
+    // Загружаем сохраненные тяги из памяти
+    let puffs = localStorage.getItem('puffs_count') ? parseInt(localStorage.getItem('puffs_count')) : 0;
+    countDisplay.textContent = puffs;
+
+    vapeBtn.addEventListener('click', () => {
+        puffs++;
+        countDisplay.textContent = puffs;
+        localStorage.setItem('puffs_count', puffs); // Сохраняем
+
+        statusText.textContent = "Сделана тяга!";
+        
+        // Легкая вибрация телефона (работает в Telegram)
+        if (tg.HapticFeedback) {
+            tg.HapticFeedback.impactOccurred('medium');
+        }
+
+        // Убираем надпись через 1.5 секунды
+        setTimeout(() => {
+            statusText.textContent = "";
+        }, 1500);
+    });
+</script>
+</body>
+</html>
